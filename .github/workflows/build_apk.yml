@@ -3,19 +3,22 @@ name: Build Android APK
 on:
   push:
     branches: [ "main", "master" ]
-  workflow_dispatch:
+  workflow_dispatch:        # дозволяє запустити вручну з вкладки Actions
 
+# Потрібно, щоб action `softprops/action-gh-release` міг створювати реліз
 permissions:
-  contents: write   # дозволяє створювати Release
+  contents: write          # <-- дозволяє створювати Release
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Клон репозиторію
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ JDK 17 (потрібен для Android)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -23,21 +26,24 @@ jobs:
           java-version: 17
           cache: gradle
 
+      # 3️⃣ Android SDK (встановлює platform‑tools, build‑tools тощо)
       - name: Install Android SDK
-        uses: android-actions/setup-android@v4   # ← оновлено
+        uses: android-actions/setup-android@v4   # оновлена версія, без пакету `tools`
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+      # 4️⃣ **Gradle без wrapper** – дію, яка сама завантажує Gradle
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembleRelease            # <-- це саме команда збірки
 
-      - name: Build Release APK
-        run: ./gradlew assembleRelease
-
+      # 5️⃣ Завантажити готовий APK як артефакт
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: app/build/outputs/apk/release/app-release.apk
 
+      # 6️⃣ (Опціонально) Створити GitHub Release з APK
       - name: Publish Release
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         uses: softprops/action-gh-release@v2
