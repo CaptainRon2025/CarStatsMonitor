@@ -31,7 +31,11 @@ jobs:
 
       # 4️⃣ **Очистка** старих артефактів
       - name: Clean build directory
-        run: ./gradlew clean
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: "8.10"
+          arguments: "clean"
+          gradle-executable: "gradle"
 
       # 5️⃣ **Gradle без wrapper** – сам завантажує потрібну версію
       - name: Set up Gradle
