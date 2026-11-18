@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CarStats Monitor</string>
+    <string name="bluetooth_not_available">Bluetooth не підтримується на цьому пристрої</string>
+    <string name="bluetooth_disabled">Bluetooth вимкнено. Увімкніть Bluetooth для з'єднання</string>
+    <string name="connecting_to_device">Підключення до %1$s…</string>
+    <string name="connected">Підключено до ELM327</string>
+    <string name="disconnected">Відключено</string>
+</resources>
