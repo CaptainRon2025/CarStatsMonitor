@@ -34,7 +34,10 @@ jobs:
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: assembleRelease            # <-- це саме команда збірки
+          gradle-version: "8.10"        # явно вказуємо потрібну версію Gradle
+          arguments: "assembleRelease"  # команда збірки
+          # Указуємо, що wrapper не використовується
+          gradle-executable: "gradle"
 
       # 5️⃣ Завантажити готовий APK як артефакт
       - name: Upload APK artifact
