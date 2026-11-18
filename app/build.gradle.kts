@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.carstats.monitor"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.carstats.monitor"
