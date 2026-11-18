@@ -35,7 +35,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: "8.10"        # явно вказуємо потрібну версію Gradle
-          arguments: "assembleRelease"  # команда збірки
+          arguments: "assembleDebug --stacktrace --info"  # команда збірки
           # Указуємо, що wrapper не використовується
           gradle-executable: "gradle"
 
