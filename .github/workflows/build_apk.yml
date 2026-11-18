@@ -3,11 +3,10 @@ name: Build Android APK
 on:
   push:
     branches: [ "main", "master" ]
-  workflow_dispatch:        # дозволяє запустити вручну з вкладки Actions
+  workflow_dispatch:        # дозволяє запускати вручну
 
-# Потрібно, щоб action `softprops/action-gh-release` міг створювати реліз
 permissions:
-  contents: write          # <-- дозволяє створювати Release
+  contents: write          # дозволяє створювати Release
 
 jobs:
   build:
@@ -26,33 +25,25 @@ jobs:
           java-version: 17
           cache: gradle
 
-      # 3️⃣ Android SDK (встановлює platform‑tools, build‑tools тощо)
+      # 3️⃣ Android SDK
       - name: Install Android SDK
-        uses: android-actions/setup-android@v4   # оновлена версія, без пакету `tools`
+        uses: android-actions/setup-android@v4   # оновлена версія
 
-      # 4️⃣ **Gradle без wrapper** – дію, яка сама завантажує Gradle
+      # 4️⃣ **Очистка** старих артефактів
+      - name: Clean build directory
+        run: ./gradlew clean
+
+      # 5️⃣ **Gradle без wrapper** – сам завантажує потрібну версію
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: "8.10"        # явно вказуємо потрібну версію Gradle
-          arguments: "assembleDebug --stacktrace --info"  # команда збірки
-          # Указуємо, що wrapper не використовується
+          gradle-version: "8.10"
+          arguments: "assembleDebug --stacktrace --info"
           gradle-executable: "gradle"
 
-      # 5️⃣ Завантажити готовий APK як артефакт
+      # 6️⃣ Завантажити готовий APK як артефакт
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
-          path: app/build/outputs/apk/release/app-release.apk
-
-      # 6️⃣ (Опціонально) Створити GitHub Release з APK
-      - name: Publish Release
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ github.run_number }}
-          name: "Build ${{ github.run_number }}"
-          files: app/build/outputs/apk/release/app-release.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: debug-apk
+          path: app/build/outputs/apk/debug/*.apk
