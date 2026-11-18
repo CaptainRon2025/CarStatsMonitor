@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # дозволяє створювати Release
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
           cache: gradle
 
       - name: Install Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4   # ← оновлено
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
